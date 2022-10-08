@@ -1,0 +1,70 @@
+// twilio client
+import { client } from '../utils/twilioClient';
+
+// Send one SMS
+export const sendMessage = async (body, to, from, statusCallback = '') => {
+  return await client.messages.create({
+      to,
+      from,
+      body,
+      statusCallback,
+    })
+    .then(message => {
+      console.log(`SMS message sent: ${message.sid}`);
+      return message;
+    })
+    .catch(err => {
+      console.log(`Error sending SMS: ${err}`);
+      return err;
+    });
+}
+
+// Send one MMS
+export const sendMMS = async (body, mediaUrl, to, from) => {
+  return await client.messages.create({
+      body,
+      from,
+      to,
+      mediaUrl,
+    })
+    .then(message => {
+      console.log(`MMS message sent: ${message.sid}`);
+      return message;
+    })
+    .catch(err => {
+      console.log(`Error sending MMS: ${err}`);
+      return err;
+    });
+}
+
+// Send message from Messaging Service
+export const sendMessageByService = async (messagingServiceSid, body, to, from) => {
+  return await client.messages.create({
+      messagingServiceSid,
+      body,
+      from,
+      to,
+    })
+    .then(message => {
+      console.log(`Messaging service message sent: ${message.sid}`);
+      return message;
+    })
+    .catch(err => {
+      console.log(`Error sending messaging service message: ${err}`);
+      return err;
+    })
+}
+
+// List all SMS for an account, optional filter
+export const listMessages = async (filterCriteria = { limit: 20 }) => {
+  return await client
+    .messages.list(filterCriteria)
+    .then(messages => {
+      messages.forEach(m => console.log(m));
+      return messages;
+    })
+    .catch(err => {
+      console.log(`Error getting message list: ${err}`);
+      return err;
+    });
+}

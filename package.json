@@ -15,7 +15,7 @@
     "@babel/preset-env": "^7.18.9",
     "dotenv": "^16.0.1",
     "nodemon": "^2.0.19",
-    "twilio": "^3.79.0"
+    "twilio": "^3.82.2"
   },
   "dependencies": {
     "@google-cloud/speech": "^4.10.2",

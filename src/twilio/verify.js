@@ -1,42 +1,42 @@
 // twilio client
 import { client } from '../utils/twilioClient';
-import { verificatioChannels } from '../utils/constants';
 
-// Start API endpoint
-// Sends 4 to 10 digit verification code via SMS, Voice, or Email & waits for response
-export const sendVerificationCode = async (verificationSid, to, channel = 'sms') => {
-  const validChannel = verificatioChannels.includes(channel);
-  if (validChannel) {
-    return await client.verify.services(verificationSid)
-      .verifications
-      .create({
-        to,
-        channel,
-      })
-      .then(data => {
-        console.log('Verification success ', data);
-        return data;
-      })
-      .catch(err => {
-        console.log('Error submitting user number to begin verification process ', err);
-        return err;
-      });
-  } else {
-    throw `Invalid verification channel. Please use one of the following: ${verificatioChannels.join(", ")}.`;
-  }
+// Create Verification Service
+export const createVerificationService = async (friendlyName = 'My Verify Service') => {
+  return await client.verify.v2.services
+    .create({ friendlyName })
+    .then(data => {
+      console.log('Success creating Verification Service with ID: ', data.sid);
+      return data;
+    })
+    .catch(err => {
+      console.log('Error creating Verification Service ', err);
+      return err;
+    });
 }
 
-// Check API endpoints
-// Checkts the user's input matches the code. Approve / deny
-export const submitVerificationCode = (verificationSid, to, verificationCode) => {
-  client.verify.services(verificationSid)
-    .verificationChecks
-    .create({
-      to,
-      code: verificationCode,
-    })
+// Send the verfication code via channel requested. Defaults to SMS
+export const sendVerificationCode = async (verificationSid = process.env.VERIFY_DEMO_SID, to, channel = 'sms') => {
+  return await client.verify.v2.services(verificationSid)
+    .verifications
+    .create({ to, channel })
     .then(data => {
-      console.log(`Verification submit check: ${data}`);
+      console.log('Success sending Verify code ', data);
+      return data;
+    })
+    .catch(err => {
+      console.log('Error sending Verify code ', err);
+      return err;
+    });
+}
+
+// Check if the user's input code matches the service code sent. Approve / deny
+export const submitVerificationCode = async (verificationSid = process.env.VERIFY_DEMO_SID, to, code) => {
+  return await client.verify.v2.services(verificationSid)
+    .verificationChecks
+    .create({ to, code })
+    .then(data => {
+      console.log('Success submiting Verify check: ', data);
       return data;
     })
     .catch(err => {

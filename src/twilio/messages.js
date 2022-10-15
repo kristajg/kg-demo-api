@@ -38,7 +38,7 @@ export const sendMMS = async (body, mediaUrl, to, from) => {
 }
 
 // Send message from Messaging Service
-export const sendMessageByService = async (messagingServiceSid, body, to, from) => {
+export const sendMessageByService = async (messagingServiceSid = process.env.MESSAGE_SERVICE_DEMO_SID, body, to, from) => {
   return await client.messages.create({
       messagingServiceSid,
       body,
@@ -65,6 +65,33 @@ export const listMessages = async (filterCriteria = { limit: 20 }) => {
     })
     .catch(err => {
       console.log(`Error getting message list: ${err}`);
+      return err;
+    });
+}
+
+// Schedule a message to send in the future (minimum 15 mins currently)
+export const scheduleMessage = async (
+  messagingServiceSid = process.env.MESSAGE_SERVICE_DEMO_SID,
+  body,
+  sendAt,
+  to,
+  scheduleType = 'fixed',
+  statusCallback = 'https://kaygee.ngrok.io/status-callback',
+) => {
+  return await client.messages.create({
+      messagingServiceSid,
+      body,
+      sendAt,
+      scheduleType,
+      statusCallback,
+      to,
+    })
+    .then(message => {
+      console.log(`SMS successfully scheduled to be sent: ${message.sid}`);
+      return message;
+    })
+    .catch(err => {
+      console.log('Error sending scheduled message: ', err);
       return err;
     });
 }

@@ -35,6 +35,16 @@ router.post('/send-message-by-service', (req, res) => {
     });
 });
 
+router.post('/send-scheduled-message', (req, res) => {
+  const { messageBody, messagingServiceSId, toNumber, sendAt, scheduleType, statusCallback } = req.body;
+  sendMessageByService(messagingServiceSId, messageBody, sendAt, toNumber, scheduleType, statusCallback)
+    .then(data => res.json({ data }))
+    .catch(err => {
+      console.log('Err sending scheduled message ', err);
+      res.send('Error sending scheduled message');
+    });
+});
+
 router.post('/list-messages', (req, res) => {
   const { filterCriteria } = req.body;
   listMessages(filterCriteria)

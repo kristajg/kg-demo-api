@@ -31,10 +31,38 @@ app.use('/', messageRoutes);
 app.use('/', verifyRoutes);
 app.use('/', voiceRoutes);
 
-
+// home route
 app.get('/', (req, res) => {
   res.send('Test Twilio Sandbox is online!');
 });
+
+// status callback for demos
+app.post('/status-callback', (req, res) => {
+  console.log('status callback hit ', req.body);
+})
+
+// data dip example for studio, webhooks, etc
+app.post('/lookup-customer', (req, res) => {
+  console.log('Lookup caller by number: ', req.body.caller_number);
+  const { caller_number = '' } = req.body;
+  const customer = {
+    is_customer: false,
+    customer_id: null,
+    customer_first_name: '',
+    customer_balance: null,
+  };
+  if (caller_number === process.env.MY_PHONE_NUMBER) {
+    customer = {
+      is_customer: true,
+      customer_id: 1,
+      customer_first_name: 'Krista',
+      customer_balance: '1 million dollars',
+    };
+  }
+  console.log('Customer result: ', customer);
+  return res.json(customer);
+})
+
 
 // START SCHEDULE MESSAGES TEST
 // let dateTime = new Date("July 25, 2022 14:00:00");
@@ -46,36 +74,20 @@ app.get('/', (req, res) => {
 
 // client.messages
 //   .create({
-//       messagingServiceSid: process.env.KG_MARKETING_MESSAGING_SERVICE_SID,
+//       messagingServiceSid: process.env.MESSAGE_SERVICE_DEMO_SID,
 //       body: 'This is a scheduled message!!',
 //       sendAt: dateTime.toISOString(),
 //       scheduleType: 'fixed',
-//       statusCallback: 'https://kaygee.ngrok.io/status-callback-test',
-//       to: '+17242726172'
+//       statusCallback: 'https://kaygee.ngrok.io/status-callback',
+//       to: process.env.MY_PHONE_NUMBER
 //     })
 //   .then(message => {
 //     console.log('Scheduled msg ', message);
 //   });
-
-// app.post('/status-callback-test', (req, res) => {
-//   console.log('status callback hit ', req.body);
-// })
-// STOP
+// END SCHEDULE MESSAGES TEST
 
 
-// DATADIP EXAMPLE FOR STUDIO
-app.post('/lookup-customer', (req, res) => {
-  console.log('Lookup caller by number: ', req.body.caller_number);
-  const customer = {
-    is_customer: true,
-    customer_id: 1,
-    customer_number: process.env.KG_PHONE_NUMBER,
-    customer_first_name: 'Krista',
-    customer_balance: '1 million dollars',
-  };
-  console.log('Result: ', customer);
-  return res.json(customer);
-})
+
 
 /*
  * Start HEALTHCARE + DIALOGFLOW DEMO CODE

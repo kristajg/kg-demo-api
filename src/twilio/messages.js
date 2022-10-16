@@ -10,7 +10,7 @@ export const sendMessage = async (body, to, from, statusCallback = '') => {
       statusCallback,
     })
     .then(message => {
-      console.log(`SMS message sent: ${message.sid}`);
+      console.log('SMS message sent: ', message.sid);
       return message;
     })
     .catch(err => {

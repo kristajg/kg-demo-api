@@ -24,3 +24,5 @@ router.post('/list-account-numbers', (req, res) => {
       res.send('Err fetching account numbers');
     });
 });
+
+module.exports = router;

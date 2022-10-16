@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 
 // route imports
 const messageRoutes = require('./src/routes/messageRoutes.js');
+const numberRoutes = require('./src/routes/numberRoutes.js');
 const verifyRoutes = require('./src/routes/verifyRoutes.js');
 const voiceRoutes = require('./src/routes/voiceRoutes.js');
 
@@ -29,6 +30,7 @@ app.use(cookieParser());
 
 // route instantiation
 app.use('/', messageRoutes);
+app.use('/', numberRoutes);
 app.use('/', verifyRoutes);
 app.use('/', voiceRoutes);
 

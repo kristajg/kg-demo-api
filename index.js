@@ -51,12 +51,15 @@ app.post('/lookup-customer', (req, res) => {
     customer_first_name: '',
     customer_balance: null,
   };
+  // Only looking up my own number for demo purposes
+  // Otherwise this would be a database query
   if (caller_number === process.env.MY_PHONE_NUMBER) {
     customer = {
       is_customer: true,
       customer_id: 1,
       customer_first_name: 'Krista',
       customer_balance: '1 million dollars',
+      assigned_agent_id: 1,
     };
   }
   console.log('Customer result: ', customer);

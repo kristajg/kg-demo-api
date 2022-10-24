@@ -27,8 +27,8 @@ router.post('/send-verification-code', (req, res) => {
 });
 
 router.post('/submit-verification-code', (req, res) => {
-  const { verificationSid, toNumber, code } = req.body;
-  submitVerificationCode(verificationSid, toNumber, code)
+  const { verificationSid, to, code } = req.body;
+  submitVerificationCode(verificationSid, to, code)
     .then(data => res.json({ data }))
     .catch(err => {
       res.send(`Error submitting verification code ${err}`);

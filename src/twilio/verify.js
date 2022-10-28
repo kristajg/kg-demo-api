@@ -17,7 +17,7 @@ export const createVerificationService = async (friendlyName = 'My Verify Servic
 
 // Send the verfication code via channel requested. Defaults to SMS
 export const sendVerificationCode = async (verificationSid = process.env.VERIFY_DEMO_SID, to, channel = 'sms') => {
-  if (channel == 'voice') {
+  if (channel === 'voice') {
     // API expected 'call' value for voice OTP
     channel = 'call';
   }
@@ -45,6 +45,20 @@ export const submitVerificationCode = async (verificationSid = process.env.VERIF
     })
     .catch(err => {
       console.log('Error verifying user number code ', err);
+      return err;
+    });
+}
+
+export const checkVerification = async (verificationSid = process.env.VERIFY_DEMO_SID, to) => {
+  return await client.verify.v2.services(verificationSid)
+    .verificationChecks
+    .create({ to })
+    .then(data => {
+      console.log('Successful Verification check: ', data);
+      return data;
+    })
+    .catch(err => {
+      console.log('Error checking verification ', err);
       return err;
     });
 }

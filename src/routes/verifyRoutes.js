@@ -3,6 +3,7 @@ const router = express.Router();
 
 // twilio functions
 import {
+  checkVerification,
   createVerificationService,
   sendVerificationCode,
   submitVerificationCode,
@@ -32,6 +33,15 @@ router.post('/submit-verification-code', (req, res) => {
     .then(data => res.json({ data }))
     .catch(err => {
       res.send(`Error submitting verification code ${err}`);
+    });
+});
+
+router.post('/check-verification', (req, res) => {
+  const { verificationSid, to } = req.body;
+  checkVerification(verificationSid, to)
+    .then(data => res.json({ data }))
+    .catch(err => {
+      res.send(`Error checking verification ${err}`);
     });
 });
 

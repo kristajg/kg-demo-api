@@ -6,8 +6,10 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 
 // route imports
+const dialogflowRoutes = require('./src/routes/dialogflowRoutes.js');
 const messageRoutes = require('./src/routes/messageRoutes.js');
 const numberRoutes = require('./src/routes/numberRoutes.js');
+const studioRoutes = require('./src/routes/studioRoutes.js');
 const verifyRoutes = require('./src/routes/verifyRoutes.js');
 const voiceRoutes = require('./src/routes/voiceRoutes.js');
 
@@ -29,8 +31,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // route instantiation
+app.use('/', dialogflowRoutes);
 app.use('/', messageRoutes);
 app.use('/', numberRoutes);
+app.use('/', studioRoutes);
 app.use('/', verifyRoutes);
 app.use('/', voiceRoutes);
 

@@ -13,15 +13,10 @@ const studioRoutes = require('./src/routes/studioRoutes.js');
 const verifyRoutes = require('./src/routes/verifyRoutes.js');
 const voiceRoutes = require('./src/routes/voiceRoutes.js');
 
-// helpers
-import { scrubDialogFlowText } from './src/utils/utils';
 
-
-// constants
+// Uncomment next 3 lines to have a Twilio client for experimentation
 // const accountSid = process.env.TWILIO_ACCOUNT_SID;
 // const authToken = process.env.TWILIO_AUTH_TOKEN;
-
-// twilio imports
 // const client = require('twilio')(accountSid, authToken);
 
 const app = express();
@@ -38,30 +33,32 @@ app.use('/', studioRoutes);
 app.use('/', verifyRoutes);
 app.use('/', voiceRoutes);
 
-// home route
 app.get('/', (req, res) => {
   res.send('Test Twilio Sandbox is online!');
 });
 
-// status callback for demos
+// Generic status callback endpoint for demos
 app.post('/status-callback', (req, res) => {
   console.log('status callback hit ', req.body);
 })
 
-// data dip example for studio, webhooks, etc
+// Example data dip endpoint for studio, webhooks, etc
+// - pulls posted value for key caller_number
+// - mockCustomerData can be anything, customize it to your demo
+// - if the caller_number is your phone number from env vars, we
+// -- pretend as if this was a match for customer data pulled from a db
 app.post('/lookup-customer', (req, res) => {
   console.log('Lookup caller by number: ', req.body.caller_number);
   const { caller_number = '' } = req.body;
-  const customer = {
+  let mockCustomerData = {
     is_customer: false,
     customer_id: null,
     customer_first_name: '',
     customer_balance: null,
   };
-  // Only looking up my own number for demo purposes
-  // Otherwise this would be a database query
+  // Mock data lookup: this would typically be a database query
   if (caller_number === process.env.MY_PHONE_NUMBER) {
-    customer = {
+    mockCustomerData = {
       is_customer: true,
       customer_id: 1,
       customer_first_name: 'Krista',
@@ -69,10 +66,8 @@ app.post('/lookup-customer', (req, res) => {
       assigned_agent_id: 1,
     };
   }
-  console.log('Customer result: ', customer);
-  return res.json(customer);
+  return res.json(mockCustomerData);
 })
-
 
 // START SCHEDULE MESSAGES TEST
 // let dateTime = new Date("July 25, 2022 14:00:00");
@@ -95,74 +90,6 @@ app.post('/lookup-customer', (req, res) => {
 //     console.log('Scheduled msg ', message);
 //   });
 // END SCHEDULE MESSAGES TEST
-
-
-
-
-/*
- * Start HEALTHCARE + DIALOGFLOW DEMO CODE
- */ 
-// Global variables in lieu of a real database
-let doctorId = '';
-let memberId = '';
-let backupDoctorId = 'a b c 1 2 3';
-let backupMemberId = '5 4 3 2 1';
-
-// Dialogflow fullfilment webhook
-app.post('/dialogflow-fulfillment-webhook', (req, res) => {
-  return res.json({
-    fulfillmentText: `Perfect, thank you`,
-    end_interaction: true,
-  });
-});
-
-// Capture dialogflow data in callback and set to local variables
-app.post('/healthcare-service', (req, res) => {
-  const {
-    query: {
-      step = '',
-    },
-    body: {
-      QueryText = '',
-    },
-  } = req;
-
-  console.log('Dialogflow text is ', QueryText);
-
-  if (QueryText) {
-    let dialogFlowData = scrubDialogFlowText(QueryText);
-    if (step === 'doctorid') {
-      doctorId = dialogFlowData;
-    }
-    if (step === 'memberid') {
-      memberId = dialogFlowData;
-    }
-  } else {
-    // Fallback for demo
-    if (step === 'doctorid') {
-      doctorId = backupDoctorId;
-    }
-    if (step === 'memberid') {
-      memberId = backupMemberId;
-    }
-  }
-});
-
-// Return healthcare service data to studio flow
-app.post('/confirm-healthcare-service-data', (req, res) => {
-  const { step } = req.query;
-  let payload = {};
-  if (step === 'doctorid') {
-    payload = { doctorid: doctorId };
-  }
-  if (step === 'memberid') {
-    payload = { memberid: memberId };
-  }
-  res.json(payload);
-});
-/*
- * End HEALTHCARE + DIALOGFLOW DEMO CODE
- */
 
 http.createServer(app).listen(8009, () => {
   console.log('Express server listening on port 8009');

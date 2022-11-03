@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 // twilio functions
-import { sendMessage, sendMMS, sendMessageByService, listMessages } from '../twilio/messages';
+import { sendMessage, sendMMS, sendMessageByService, scheduleMessage, listMessages } from '../twilio/messages';
 
 router.post('/send-message', (req, res) => {
   const { messageBody, toNumber, fromNumber } = req.body;
@@ -36,8 +36,15 @@ router.post('/send-message-by-service', (req, res) => {
 });
 
 router.post('/send-scheduled-message', (req, res) => {
-  const { messageBody, messagingServiceSId, toNumber, sendAt, scheduleType, statusCallback } = req.body;
-  sendMessageByService(messagingServiceSId, messageBody, sendAt, toNumber, scheduleType, statusCallback)
+  const {
+    messagingServiceSid,
+    body,
+    dateTimeToSend,
+    to,
+    scheduleType,
+    statusCallback,
+  } = req.body;
+  scheduleMessage(messagingServiceSId, body, dateTimeToSend, to, scheduleType, statusCallback)
     .then(data => res.json({ data }))
     .catch(err => {
       console.log('Err sending scheduled message ', err);

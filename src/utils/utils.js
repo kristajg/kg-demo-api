@@ -1,5 +1,10 @@
 import { writeFile } from 'fs';
 
+export const getFutureTimeInMins = diffInMinutes => {
+  let date = new Date();
+  return date.setMinutes(date.getMinutes() + diffInMinutes);
+}
+
 export const insertSpaceBetweenChars = text => {
   return text.split('').join(' ');
 };

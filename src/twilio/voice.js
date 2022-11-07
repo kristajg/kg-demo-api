@@ -18,6 +18,22 @@ export const placeCall = async (to, from, url = 'http://demo.twilio.com/docs/voi
     });
 }
 
+export const updateInProgressCall = async (
+  callSID,
+  twiml = '<Response><Say>Ahoy there</Say></Response>',
+) => {
+  return await client.calls(callSID)
+    .update({ twiml })
+    .then(call => {
+      console.log('Updated in progress call: ', call);
+      return call;
+    })
+    .catch(err => {
+      console.log(`Error updating in progress call: ${err}`);
+      return err;
+    });
+}
+
 export const fetchVoicemailTranscriptionBySid = async transcriptionSid => {
   return await client.transcriptions(transcriptionSid)
     .fetch()

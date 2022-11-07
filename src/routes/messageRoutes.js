@@ -39,12 +39,12 @@ router.post('/send-scheduled-message', (req, res) => {
   const {
     messagingServiceSid,
     body,
-    dateTimeToSend,
+    sendAt,
     to,
     scheduleType,
     statusCallback,
   } = req.body;
-  scheduleMessage(messagingServiceSId, body, dateTimeToSend, to, scheduleType, statusCallback)
+  scheduleMessage(messagingServiceSid, body, sendAt, to, scheduleType, statusCallback)
     .then(data => res.json({ data }))
     .catch(err => {
       console.log('Err sending scheduled message ', err);

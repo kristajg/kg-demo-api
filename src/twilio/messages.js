@@ -74,7 +74,7 @@ export const listMessages = async (filterCriteria = { limit: 20 }) => {
 export const scheduleMessage = async (
   messagingServiceSid = process.env.MESSAGE_SERVICE_DEMO_SID,
   body,
-  dateTimeToSend = getFutureTimeInMins(15), // default Twilio msg schedule must be 15 mins future minimum
+  sendAt = getFutureTimeInMins(15), // default Twilio msg schedule must be 15 mins future minimum
   to,
   scheduleType = 'fixed',
   statusCallback = 'https://kaygee.ngrok.io/status-callback',
@@ -82,7 +82,7 @@ export const scheduleMessage = async (
   return await client.messages.create({
       messagingServiceSid,
       body,
-      sendAt: dateTimeToSend.toISOString(),
+      sendAt,
       scheduleType,
       statusCallback,
       to,

@@ -2,7 +2,8 @@ import { writeFile } from 'fs';
 
 export const getFutureTimeInMins = diffInMinutes => {
   let date = new Date();
-  return date.setMinutes(date.getMinutes() + diffInMinutes);
+  let newDateObj = new Date(date.getTime() + diffInMinutes*60000);
+  return newDateObj.toISOString();
 }
 
 export const insertSpaceBetweenChars = text => {

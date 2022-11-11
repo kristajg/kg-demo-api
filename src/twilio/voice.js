@@ -1,13 +1,26 @@
 // twilio client
 import { client } from '../utils/twilioClient';
 
-export const placeCall = async (to, from, url = 'http://demo.twilio.com/docs/voice.xml', statusCallback = '') => {
-  return await client.calls.create({
-      url,
-      to,
-      from,
-      statusCallback,
-    })
+export const placeCall = async (
+  to,
+  from,
+  twiml = '<Response><Say>Thanks for calling the demo app. Lets just hang out and relax while we consider our lives.</Say></Response>',
+  url = '', 
+  statusCallback = 'https://kaygee.ngrok.io/status-callback',
+) => {
+  let callObj = {
+    to,
+    from,
+    statusCallback,
+  };
+  // Can either use straight twiml, or url that returns twiml
+  if (twiml) {
+    callObj.twiml = twiml;
+  }
+  if (url && !twiml) {
+    callObj.url = url;
+  }
+  return await client.calls.create(callObj)
     .then(call => {
       console.log(call.sid);
       return call;
@@ -29,7 +42,7 @@ export const updateInProgressCall = async (
       return call;
     })
     .catch(err => {
-      console.log(`Error updating in progress call: ${err}`);
+      console.log('Error updating in progress call: ', err);
       return err;
     });
 }

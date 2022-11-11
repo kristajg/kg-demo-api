@@ -1,9 +1,9 @@
 require('dotenv').config();
 
-// 3rd party libraries
 import http from 'http';
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import WebSocket from 'ws';
 
 // route imports
 const dialogflowRoutes = require('./src/routes/dialogflowRoutes.js');
@@ -13,7 +13,7 @@ const studioRoutes = require('./src/routes/studioRoutes.js');
 const verifyRoutes = require('./src/routes/verifyRoutes.js');
 const voiceRoutes = require('./src/routes/voiceRoutes.js');
 
-// Uncomment next 3 lines to have a Twilio client for experimentation
+// Uncomment next 3 lines to have a Twilio client for experimentation in index.js
 // const accountSid = process.env.TWILIO_ACCOUNT_SID;
 // const authToken = process.env.TWILIO_AUTH_TOKEN;
 // const client = require('twilio')(accountSid, authToken);
@@ -32,6 +32,28 @@ app.use('/', studioRoutes);
 app.use('/', verifyRoutes);
 app.use('/', voiceRoutes);
 
+const server = http.createServer(app).listen(8009, () => {
+  console.log('Express server listening on port 8009');
+});
+
+const wss = new WebSocket.Server({ server });
+
+// Handle Web Socket Connection
+let socket;
+wss.on('connection', function connection(ws) {
+  console.log('New Connection Initiated');
+  socket = ws;
+
+  ws.on('message', function message(data) {
+    console.log('Message data received: ', data);
+    ws.send('Hello back!');
+  });
+
+  ws.onerror = function () {
+    console.log('Some Error occurred');
+  }
+});
+
 app.get('/', (req, res) => {
   res.send('Test Twilio Sandbox is online!');
 });
@@ -39,13 +61,19 @@ app.get('/', (req, res) => {
 // Generic status callback endpoint for demos
 app.post('/status-callback', (req, res) => {
   console.log('status callback hit ', req.body);
+  if (socket) {
+    socket.send(JSON.stringify(req.body));
+  } else {
+    console.log('Socket not found');
+    res.send(req.body);
+  }
 })
 
 // Example data dip endpoint for studio, webhooks, etc
 // - pulls posted value for key caller_number
 // - mockCustomerData can be anything, customize it to your demo
 // - if the caller_number is your phone number from env vars, we
-// -- pretend as if this was a match for customer data pulled from a db
+// - pretend as if this was a match for customer data pulled from a db
 app.post('/lookup-customer', (req, res) => {
   console.log('Lookup caller by number: ', req.body.caller_number);
   const { caller_number = '' } = req.body;
@@ -67,7 +95,3 @@ app.post('/lookup-customer', (req, res) => {
   }
   return res.json(mockCustomerData);
 })
-
-http.createServer(app).listen(8009, () => {
-  console.log('Express server listening on port 8009');
-});

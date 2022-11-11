@@ -54,10 +54,7 @@ export const purchasePhoneNumber = () => {}
 export const listAccountNumbers = async (limit) => {
   return await client.incomingPhoneNumbers
     .list({ limit })
-    .then(data => {
-      data.forEach(p => console.log('Account phone number ', p));
-      return data;
-    })
+    .then(data => data)
     .catch(err => {
       console.log(`Error fetching account numbers: ${err}`);
       return err;

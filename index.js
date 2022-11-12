@@ -46,11 +46,11 @@ wss.on('connection', function connection(ws) {
 
   ws.on('message', function message(data) {
     console.log('Message data received: ', data);
-    ws.send('Hello back!');
+    ws.send('Hello back');
   });
 
   ws.onerror = function () {
-    console.log('Some Error occurred');
+    console.log('An Error occurred');
   }
 });
 
@@ -60,12 +60,11 @@ app.get('/', (req, res) => {
 
 // Generic status callback endpoint for demos
 app.post('/status-callback', (req, res) => {
-  console.log('status callback hit ', req.body);
+  // console.log('status callback hit ', req.body);
   if (socket) {
     socket.send(JSON.stringify(req.body));
   } else {
     console.log('Socket not found');
-    res.send(req.body);
   }
 })
 

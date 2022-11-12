@@ -7,11 +7,13 @@ export const placeCall = async (
   twiml = '<Response><Say>Thanks for calling the demo app. Lets just hang out and relax while we consider our lives.</Say></Response>',
   url = '', 
   statusCallback = 'https://kaygee.ngrok.io/status-callback',
+  statusCallbackEvent = ['initiated', 'ringing', 'answered', 'completed'],
 ) => {
   let callObj = {
     to,
     from,
     statusCallback,
+    statusCallbackEvent,
   };
   // Can either use straight twiml, or url that returns twiml
   if (twiml) {

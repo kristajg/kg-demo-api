@@ -6,15 +6,14 @@ exports.handler = (context, event, callback) => {
     let { limit } = event;
     if (typeof limit == "string") limit = Number.parseInt(limit);
 
-    let response;
+    let response = new Response();
     listAccountNumbers(client, limit)
     .then(data => {
-        response = Response.okResponse(data);
+        response = response.okResponse(data);
         return callback(null, response);
     })
     .catch(err => {
-        console.log(`Error listing account's phone numbers ${err}`);
-        response = Response.badRequestResponse(`Error listing account's phone numbers ${err}`);
+        response = response.badRequestResponse(`Error listing account's phone numbers ${err}`);
         return callback(response);
     })
 }

@@ -18,6 +18,8 @@
     "twilio": "^3.82.2"
   },
   "dependencies": {
+    "@sendgrid/client": "^7.7.0",
+    "@sendgrid/mail": "^7.7.0",
     "@google-cloud/speech": "^4.10.2",
     "actions-on-google": "^3.0.0",
     "fs": "0.0.1-security",

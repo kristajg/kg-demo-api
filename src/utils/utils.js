@@ -53,12 +53,10 @@ export const verifyEmailHtmlTemplate = `
 <body>
 <center>
   <p>
-    Click on your one time passcode
+    {{twilio_message_without_code}}
   </p>
   <p>
-    <a href="https://test-twilio-sandbox-6298-dev.twil.io/verify/submit-verification-code?token={{twilio_code}}" 
-       style="background-color:#ffbe00; color:#000000; display:inline-block; padding:12px 40px 12px 40px; text-align:center; text-decoration:none;" 
-       target="_blank">{{twilio_code}}</a>
+    {{twilio_code}}
   </p>
 </center>
 </body>

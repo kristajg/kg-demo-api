@@ -6,15 +6,14 @@ exports.handler = (context, event, callback) => {
     let { country, type, areaCode, limit } = event;
     if (typeof limit == 'string') limit = Number.parseInt(limit);
     
-    let response;
+    let response = new Response();
     listAvailableNumbers(client, country, type, areaCode, limit)
     .then(data => {
-        response = Response.okResponse(data);
+        response = response.okResponse(data);
         return callback(null, response);
     })
     .catch(err => {
-        console.log(`Error fetching available phone numbers ${err}`);
-        response.badRequestResponse(`Error fetching available phone numbers ${err}`);
-        return callback(`Error fetching available phone numbers ${err}`);
+        response = response.badRequestResponse(`Error fetching available phone numbers ${err}`);
+        return callback(response);
     });
 }

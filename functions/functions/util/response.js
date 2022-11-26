@@ -1,8 +1,12 @@
-const Response = () => {
+class Response{
+    constructor(){
+
+    }
+
     /**
      * Default response
      */
-    const defaultResponse = () => {
+    _defaultResponse(){
         const response = new Twilio.Response();
         response.appendHeader("Access-Control-Allow-Origin", "*");
         response.appendHeader("Access-Control-Allow-Headers", "PUT, POST, GET, OPTIONS, DELETE");
@@ -10,9 +14,13 @@ const Response = () => {
         response.appendHeader("Content-Type", "application/json");
         return response;
     }
-
-    const okResponse = (body) => {
-        const response = defaultResponse();
+    /**
+     * 
+     * @param {any} body 
+     * @returns Successful 200 response
+     */
+    okResponse(body){
+        const response = this._defaultResponse();
         response.setStatusCode(200);
         response.setBody(body);
         return response;
@@ -21,18 +29,14 @@ const Response = () => {
     /**
      * Bad request response
      * @param {any}
+     * @returns Bad Request 400 response
      */
-    const badRequestResponse = (body) => {
-        const response = defaultResponse();
+    badRequestResponse(body){
+        const response = this._defaultResponse();
         response.setStatusCode(400);
         response.setBody(body);
         return response;
     }
-
-    return {
-        okResponse,
-        badRequestResponse,
-    }
 }
 
-module.exports = Response();
+module.exports = Response;

@@ -105,8 +105,8 @@ defaultServiceConfigurationUpdate=$(curl -X POST "https://conversations.twilio.c
 --data-urlencode "DefaultMessagingServiceSid=$messagingService" \
 -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN )
 
-# Create a new Sendgrid Api Key, NEED TO COMPLETE AND REQUIRES ANOTHER API KEY TO CREATE VIA API
-echo "SENDGRID_API_KEY=$SENDGRID_API_KEY" >> functions/.env
+# Create a new Sendgrid Api Key, NEED TO COMPLETE AND REQUIRES AN EXISTING API KEY TO CREATE ANOTHER VIA API
+
 
 
 # # Prepare for deployment to Twilio serverless

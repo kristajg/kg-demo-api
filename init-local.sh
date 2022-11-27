@@ -54,9 +54,9 @@ echo "Now creating needed services"
 
 # Create dotenv file for project environment variables
 touch functions/.env 
-echo "TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID" >> functions/.env
-echo "TWILIO_AUTH_TOKEN=$TWILIO_AUTH_TOKEN" >> functions/.env 
-echo "SENDGRID_API_KEY=$SENDGRID_API_KEY" >> functions/.env
+echo "TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID" >> .env
+echo "TWILIO_AUTH_TOKEN=$TWILIO_AUTH_TOKEN" >> .env 
+echo "SENDGRID_API_KEY=$SENDGRID_API_KEY" >> .env
 
 # Create Verify Demo Service
 verifyServiceSid=$(curl -X POST "https://verify.twilio.com/v2/Services" \
@@ -69,7 +69,7 @@ verifyServiceSid=$(curl -X POST "https://verify.twilio.com/v2/Services" \
 # -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
 
 echo "Created Verify Demo Service $verifyServiceSid"
-echo "VERIFY_DEMO_SID=$verifyServiceSid" >> functions/.env
+echo "VERIFY_DEMO_SID=$verifyServiceSid" >> .env
 
 # Search for available phone number for Messaging Service
 availablePhoneNumber=$(curl -G https://preview.twilio.com/Numbers/AvailableNumbers \
@@ -78,7 +78,7 @@ availablePhoneNumber=$(curl -G https://preview.twilio.com/Numbers/AvailableNumbe
 -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN | jq --raw-output '.items[0] .phone_number')
 
 echo "Found a local phone number $availablePhoneNumber"
-echo "MY_PHONE_NUMBER=$availablePhoneNumber" >> functions/.env
+echo "MY_PHONE_NUMBER=$availablePhoneNumber" >> .env
 
 # Purchase available phone number for Messaging Service 
 phoneNumberSid=$(curl -X POST https://preview.twilio.com/Numbers/ActiveNumbers \
@@ -93,7 +93,7 @@ messagingService=$(curl -X POST "https://messaging.twilio.com/v1/Services" \
 -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN | jq --raw-output '.sid')
 
 echo "Created Messaging Service $messagingService"
-echo "MESSAGE_SERVICE_DEMO_SID=$messagingService" >> functions/.env
+echo "MESSAGE_SERVICE_DEMO_SID=$messagingService" >> .env
 
 # Added purchased phone number to Messaging Service 
 addedPhoneNumberToService=$(curl -X POST "https://messaging.twilio.com/v1/Services/$messagingService/PhoneNumbers" \
@@ -105,15 +105,70 @@ defaultServiceConfigurationUpdate=$(curl -X POST "https://conversations.twilio.c
 --data-urlencode "DefaultMessagingServiceSid=$messagingService" \
 -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN )
 
-# Create a new Sendgrid Api Key, NEED TO COMPLETE AND REQUIRES AN EXISTING API KEY TO CREATE ANOTHER VIA API
+#Create Email Template for Verify Service
+verifyEmailTemplate=$(curl -X POST "https://api.sendgrid.com/v3/templates" \
+--header "Authorization: Bearer $SENDGRID_API_KEY" \
+--header "Content-Type: application/json" \
+--data '{"name": "Verify OTP Demo", "generation": "dynamic"}' | jq --raw-output '.id')
+
+echo "Created Dynamic Email Template for Verify Service"
+echo "VERIFY_TEMPLATE_ID=$verifyEmailTemplate" >> .env
+
+# Store Verify Template HTML 
+verifyTemplateHtml=`<html>
+  <head>
+    <style type="text/css">
+      body, p, div {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 14px;
+      }
+      a {
+        text-decoration: none;
+      }
+    </style>
+    <title></title>
+  </head>
+  <body>
+  <center>
+    <p>
+      Example 1 - just the code (no localization in the message):
+    </p>
+    <p>
+      The verification code is: <strong>{{twilio_code}}</strong>
+    </p>
+    <p>
+      Example 2 - use the code in a clickable link to trigger a verification check:
+    </p>
+    <p>
+      <a href="https://your-company.com/signup/email/verify?token={{twilio_code}}" 
+         style="background-color:#ffbe00; color:#000000; display:inline-block; padding:12px 40px 12px 40px; text-align:center; text-decoration:none;" 
+         target="_blank">Verify Email Now</a>
+    </p>
+    <p>
+      Example 3 - entire localized message and code:
+    </p>
+    <p>
+      <strong>{{twilio_message}}</strong>
+    </p>
+    <p><a href="https://sendgrid.com/blog/open-source-transactional-email-templates/">Check out more templates</a></p>
+    <span style="font-size: 10px;"><a href=".">Email preferences</a></span>
+  </center>
+  </body>
+</html>`
+
+#Create Verify Template Version
+verifyTemplateVersion=$(curl -X POST "https://api.sendgrid.com/v3/templates/$verifyEmailTemplate/versions" \
+--header "Authorization: Bearer <<YOUR_API_KEY_HERE>>" \
+--header "on-behalf-of: The subuser's username. This header generates the API call as if the subuser account was making the call." \
+--header "Content-Type: application/json" \
+--data `{"template_id": "$verifyEmailTemplate", "active": 1, "name": "Verify OTP Demo", "html_content": "$verifyTemplateHtml", "subject": "Verify Demo One Time Passcode"}`
+
+echo "Created Verify Template Version $verifyTemplateVersion"
+
+# Install project dependencies 
+npm install
 
 
 
-# # Prepare for deployment to Twilio serverless
-cp ./package.json ./functions/
 
-cd functions && twilio serverless:deploy --env .env
-
-
-# twilio serverless:deploy 
 

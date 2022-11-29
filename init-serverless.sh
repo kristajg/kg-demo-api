@@ -24,33 +24,44 @@ else
     echo "Twilio cli is installed"
 fi 
 
-# Set Credentials for making Twilio API calls
-while getopts ":a:b:c:" OPTION 
+# Set Twilio and Sendgrid credentials for making Twilio API calls
+while [ "$#" -gt 0 ];
 do
-    case $OPTION in
-        a) 
-            echo "account sid present"
-            TWILIO_ACCOUNT_SID="$OPTARG"
-            export TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID
+    case "$1" in
+        --account-sid)
+            TWILIO_ACCOUNT_SID=$2
+            shift
             ;;
-        b)
-            echo "api key is present"
-            TWILIO_AUTH_TOKEN="$OPTARG"
-            export TWILIO_AUTH_TOKEN=$TWILIO_AUTH_TOKEN
+        --auth-token)
+            TWILIO_AUTH_TOKEN=$2
+            shift
             ;;
-        c)
-            echo "sendgrid api key present"
-            SENDGRID_API_KEY="$OPTARG"
-            ;;
-        ?)
-            echo "You did not provide anything"
-            exit 1
+        --sendgrid-api-key)
+            SENDGRID_API_KEY=$2
+            shift
             ;;
     esac
-done
+    shift
+done 
 
+#Ask user for Twilio or Sendgrid credentials not provided
+if [ -z "$TWILIO_ACCOUNT_SID" ]
+then
+    echo "Please enter your Twilio Account Sid"
+    read TWILIO_ACCOUNT_SID
+fi
+if [ -z "$TWILIO_AUTH_TOKEN" ]
+then 
+    echo "Please enter your Twilio Auth Token"
+    read TWILIO_AUTH_TOKEN
+fi
+if [ -z "$SENDGRID_API_KEY" ]
+then
+    echo "Please enter your Sendgrid Api Key"
+    read SENDGRID_API_KEY
+fi
 
-echo "Now creating needed services"
+echo "Now creating required services for demo to work"
 
 # Create dotenv file for project environment variables
 touch functions/.env 
@@ -60,7 +71,7 @@ echo "SENDGRID_API_KEY=$SENDGRID_API_KEY" >> functions/.env
 
 # Create Verify Demo Service
 verifyServiceSid=$(curl -X POST "https://verify.twilio.com/v2/Services" \
---data-urlencode "FriendlyName=KG Verify Demo Service" \
+--data-urlencode "FriendlyName=Demo Quickstart Verify Service" \
 --data-urlencode "UIEditable=true" \
 -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN | jq --raw-output '.sid')
 
@@ -89,7 +100,7 @@ echo "Sid for purchased phone number $phoneNumberSid"
 
 # Create Messaging Service, add purchased phone number to number pool
 messagingService=$(curl -X POST "https://messaging.twilio.com/v1/Services" \
---data-urlencode "FriendlyName=KG Demo Messaging Service" \
+--data-urlencode "FriendlyName=Demo Quickstart Messaging Service" \
 -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN | jq --raw-output '.sid')
 
 echo "Created Messaging Service $messagingService"

@@ -21,14 +21,8 @@ const placeCall = async (
     callObj.url = url;
   }
   return await client.calls.create(callObj)
-    .then(call => {
-      console.log(call.sid);
-      return call;
-    })
-    .catch(err => {
-      console.log(`Error placing call: ${err}`);
-      return err;
-    });
+    .then(call => call)
+    .catch(err => err);
 }
 
 const updateInProgressCall = async (
@@ -38,31 +32,19 @@ const updateInProgressCall = async (
 ) => {
   return await client.calls(callSID)
     .update({ twiml })
-    .then(call => {
-      console.log('Updated in progress call: ', call);
-      return call;
-    })
-    .catch(err => {
-      console.log('Error updating in progress call: ', err);
-      return err;
-    });
+    .then(call => call)
+    .catch(err => err);
 }
 
 const fetchVoicemailTranscriptionBySid = async (client, transcriptionSid) => {
   return await client.transcriptions(transcriptionSid)
     .fetch()
-    .then(data => {
-      console.log('Transcription data is: ', data);
-      return data;
-    })
-    .catch(err => {
-      console.log('Transcription failed due to error: ', err);
-      return err;
-    });
+    .then(data => data)
+    .catch(err => err);
 }
 
 module.exports = {
-    placeCall,
-    updateInProgressCall,
-    fetchVoicemailTranscriptionBySid,
+  placeCall,
+  updateInProgressCall,
+  fetchVoicemailTranscriptionBySid,
 }

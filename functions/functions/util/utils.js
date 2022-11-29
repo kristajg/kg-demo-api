@@ -37,8 +37,8 @@ const writeTextToFile = text => {
 }
 
 module.exports = {
-    getFutureTimeInMins,
-    insertSpaceBetweenChars,
-    scrubDialogFlowText,
-    writeTextToFile,
+  getFutureTimeInMins,
+  insertSpaceBetweenChars,
+  scrubDialogFlowText,
+  writeTextToFile,
 }

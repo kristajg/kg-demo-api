@@ -75,10 +75,6 @@ verifyServiceSid=$(curl -X POST "https://verify.twilio.com/v2/Services" \
 --data-urlencode "UIEditable=true" \
 -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN | jq --raw-output '.sid')
 
-# # Delete Verify Service 
-# curl -X DELETE "https://serverless.twilio.com/v1/Services/ZSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
-# -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
-
 echo "Created Verify Demo Service $verifyServiceSid"
 echo "VERIFY_DEMO_SID=$verifyServiceSid" >> .env
 
@@ -169,10 +165,10 @@ verifyTemplateHtml=`<html>
 
 #Create Verify Template Version
 verifyTemplateVersion=$(curl -X POST "https://api.sendgrid.com/v3/templates/$verifyEmailTemplate/versions" \
---header "Authorization: Bearer <<YOUR_API_KEY_HERE>>" \
+--header "Authorization: Bearer $SENDGRID_API_KEY" \
 --header "on-behalf-of: The subuser's username. This header generates the API call as if the subuser account was making the call." \
 --header "Content-Type: application/json" \
---data `{"template_id": "$verifyEmailTemplate", "active": 1, "name": "Verify OTP Demo", "html_content": "$verifyTemplateHtml", "subject": "Verify Demo One Time Passcode"}`
+--data `{"template_id": "$verifyEmailTemplate", "active": 1, "name": "Verify OTP Demo", "html_content": "$verifyTemplateHtml", "subject": "Verify Demo One Time Passcode"}`)
 
 echo "Created Verify Template Version $verifyTemplateVersion"
 

@@ -19,8 +19,8 @@ router.post('/create-verification-service', (req, res) => {
 });
 
 router.post('/send-verification-code', (req, res) => {
-  const { verificationSid, to, channel } = req.body;
-  sendVerificationCode(verificationSid, to, channel)
+  const { verificationSid, to, channel, fromEmail, templateId } = req.body;
+  sendVerificationCode(verificationSid, to, channel, templateId, fromEmail)
     .then(data => res.json({ data }))
     .catch(err => {
       res.send(`Error sending verification code ${err}`);

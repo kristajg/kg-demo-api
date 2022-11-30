@@ -1,17 +1,17 @@
-import { writeFile } from 'fs';
+const { writeFile } = require('fs');
 
-export const getFutureTimeInMins = diffInMinutes => {
+const getFutureTimeInMins = diffInMinutes => {
   let date = new Date();
   let newDateObj = new Date(date.getTime() + diffInMinutes*60000);
   return newDateObj.toISOString();
 }
 
-export const insertSpaceBetweenChars = text => {
+const insertSpaceBetweenChars = text => {
   return text.split('').join(' ');
 };
 
 // Remove whitespace and swap common words for desired characters
-export const scrubDialogFlowText = text => {
+const scrubDialogFlowText = text => {
   // convert to characters for formatting
   text = text.replaceAll('hyphen', '-');
   text = text.replaceAll('dash', '-');
@@ -29,35 +29,16 @@ export const scrubDialogFlowText = text => {
   return text;
 }
 
-export const writeTextToFile = text => {
+const writeTextToFile = text => {
   writeFile('./SAMPLE_TEXT.txt', `${text}\n`, { flag: 'a+' }, err => {
     if (err) console.log('Error writing to file ', err);
     console.log('file write success');
   });
 }
 
-export const verifyEmailHtmlTemplate = `
-<html>
-<head>
-  <style type="text/css">
-    body, p, div {
-      font-family: Helvetica, Arial, sans-serif;
-      font-size: 14px;
-    }
-    a {
-      text-decoration: none;
-    }
-  </style>
-  <title></title>
-</head>
-<body>
-<center>
-  <p>
-    {{twilio_message_without_code}}
-  </p>
-  <p>
-    {{twilio_code}}
-  </p>
-</center>
-</body>
-</html>`;
+module.exports = {
+  getFutureTimeInMins,
+  insertSpaceBetweenChars,
+  scrubDialogFlowText,
+  writeTextToFile,
+}

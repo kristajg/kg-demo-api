@@ -16,14 +16,28 @@ export const createVerificationService = async (friendlyName = 'My Verify Servic
 }
 
 // Send the verfication code via channel requested. Defaults to SMS
-export const sendVerificationCode = async (verificationSid = process.env.VERIFY_DEMO_SID, to, channel = 'sms') => {
+export const sendVerificationCode = async (
+  verificationSid = process.env.VERIFY_DEMO_SID, 
+  to, 
+  channel = 'sms',
+  templateId,
+  fromEmail
+  ) => {
+  const data = { to, channel };
   if (channel === 'voice') {
     // API expected 'call' value for voice OTP
     channel = 'call';
   }
+  else if (channel === 'email' && templateId && fromEmail) {
+    data.channelConfiguration = {
+      template_id: templateId,
+      from: fromEmail,
+    }
+  }
+    
   return await client.verify.v2.services(verificationSid)
     .verifications
-    .create({ to, channel })
+    .create(data)
     .then(data => {
       console.log('Success sending Verify code ', data);
       return data;

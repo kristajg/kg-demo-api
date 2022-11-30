@@ -62,12 +62,19 @@ app.get('/', (req, res) => {
 
 // Generic status callback endpoint for demos
 app.post('/status-callback', (req, res) => {
-  // console.log('status callback hit ', req.body);
   if (socket) {
+    console.log('Socket found, sending req body');
     socket.send(JSON.stringify(req.body));
+    res.send('ok');
   } else {
     console.log('Socket not found');
+    res.send('ok');
   }
+});
+
+// Webhook for Engagement Intelligence
+app.post('/engagement-intelligence-webhook', (req, res) => {
+  console.log('Engagement endpoint hit ', req.body);
 })
 
 // Example data dip endpoint for studio, webhooks, etc

@@ -17,8 +17,8 @@ export const createDynamicTemplate = async (name) => {
     body,
   };
   return await client.request(request)
-  .then(([response, body]) => [response,body])
-  .catch(err => err);
+    .then(([response, body]) => [response,body])
+    .catch(err => err);
 }
 
 export const createTemplateVersion = async (templateId, name, subject, active, htmlContent) => {
@@ -38,8 +38,8 @@ export const createTemplateVersion = async (templateId, name, subject, active, h
     body,
   }
   return await client.request(request)
-  .then(([response, body]) => [response, body])
-  .catch(err => err);
+    .then(([response, body]) => [response, body])
+    .catch(err => err);
 }
 
 export const createVerifyTemplateVersion = async (
@@ -47,7 +47,7 @@ export const createVerifyTemplateVersion = async (
   name = "Verify OTP Template", 
   subject = "KG's One Time Passcode", 
   active = 1
-  ) => {
+) => {
   //optional
   const headers = {};
   const data = {
@@ -65,8 +65,8 @@ export const createVerifyTemplateVersion = async (
   }
 
   return await client.request(request)
-  .then( ([response, data]) => [response, data])
-  .catch(err => err);
+    .then( ([response, data]) => [response, data])
+    .catch(err => err);
 }
 
 export const updateTemplateVersion= async (
@@ -76,7 +76,7 @@ export const updateTemplateVersion= async (
   name,
   subject,
   htmlContent
-  ) => {
+) => {
   //optional 
   const headers = {};
   const data = {
@@ -94,6 +94,6 @@ export const updateTemplateVersion= async (
   };
 
   return await client.request(request)
-  .then(([response, body]) => [response, body])
-  .catch(err => err);
+    .then(([response, body]) => [response, body])
+    .catch(err => err);
 }

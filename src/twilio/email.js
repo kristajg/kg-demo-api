@@ -45,7 +45,7 @@ export const createTemplateVersion = async (templateId, name, subject, active, h
 export const createVerifyTemplateVersion = async (
   templateId, 
   name = "Verify OTP Template", 
-  subject = "KG's One Time Passcode", 
+  subject = "One Time Passcode", 
   active = 1
 ) => {
   //optional

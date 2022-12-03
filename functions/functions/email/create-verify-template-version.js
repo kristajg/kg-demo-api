@@ -1,14 +1,13 @@
-const { sendVerificationCode } = require(Runtime.getFunctions()['twilio/verify'].path);
 const Response = require(Runtime.getFunctions()["util/response"].path);
+const { createVerifyTemplateVersion } = require(Runtime.getFunctions()["twilio/email"].path);
 
 exports.handler = (context, event, callback) => {
-  const client = context.getTwilioClient();
-  const verificationSid = context.VERIFY_DEMO_SID;
-  const { to, channel, templateId, fromEmail } = event;
+  const { SENDGRID_API_KEY } = context;
+  const { templateId, name, subject } = event;
   let response = new Response();
 
-  sendVerificationCode(client, verificationSid, to, channel, templateId, fromEmail)
-  .then(data => {
+  createVerifyTemplateVersion(SENDGRID_API_KEY, templateId, name, subject)
+  .then( ([res, data]) => {
     response = response.okResponse(data);
     return callback(null, response);
   })

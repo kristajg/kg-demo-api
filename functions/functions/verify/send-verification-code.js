@@ -5,6 +5,7 @@ exports.handler = (context, event, callback) => {
   const client = context.getTwilioClient();
   const verificationSid = context.VERIFY_DEMO_SID;
   const { to, channel, templateId, fromEmail } = event;
+  let id = templateId || context.VERIFY_TEMPLATE_ID;
   let response = new Response();
 
   sendVerificationCode(client, verificationSid, to, channel, templateId, fromEmail)

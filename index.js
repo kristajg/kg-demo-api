@@ -60,6 +60,17 @@ app.get('/', (req, res) => {
   res.send('Test Twilio Sandbox is online!');
 });
 
+// Generic endpoints for inbound webhooks - voice & sms
+app.post('/inbound-call', (req, res) => {
+  console.log('Inbound call endpoint hit ', req.body);
+  res.send('ok');
+});
+
+app.post('/inbound-sms', (req, res) => {
+  console.log('Inbound sms endpoint hit ', req.body);
+  res.send('ok');
+});
+
 // Generic status callback endpoint for demos
 app.post('/status-callback', (req, res) => {
   if (socket) {

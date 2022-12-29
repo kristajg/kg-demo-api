@@ -1,5 +1,5 @@
 # kg-demo-api
-Sandbox API for demos and learning
+Node & Express API + Twilio Functions that support the SE Snap Demo Platform
 
 
 # Deploying the Demo API

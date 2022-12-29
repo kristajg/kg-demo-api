@@ -1,9 +1,10 @@
-import Sendgrid from '../utils/sendgridClient';
-const client = new Sendgrid().getSendgridClient();
+const Sendgrid = require(Runtime.getFunctions()["util/sendgridClient"].path);
+const sendgrid = new Sendgrid();
 
-import { verifyEmailHtmlTemplate } from '../utils/utils';
+const { verifyEmailHtmlTemplate } = require(Runtime.getFunctions()["util/utils"].path);
 
-export const createDynamicTemplate = async (name) => {
+const createDynamicTemplate = async (apiKey, name) => {
+  const client = sendgrid.getSendgridClient(apiKey);
   //optional
   const headers = {};
   const body = {
@@ -17,11 +18,12 @@ export const createDynamicTemplate = async (name) => {
     body,
   };
   return await client.request(request)
-    .then(([response, body]) => [response,body])
+    .then(([response, body]) =>  [response, body])
     .catch(err => err);
 }
 
-export const createTemplateVersion = async (templateId, name, subject, active, htmlContent) => {
+const createTemplateVersion = async (apiKey, templateId, name, subject, active, htmlContent) => {
+  const client = sendgrid.getSendgridClient(apiKey);
   //optional
   const headers = {};
   const body = {
@@ -42,12 +44,14 @@ export const createTemplateVersion = async (templateId, name, subject, active, h
     .catch(err => err);
 }
 
-export const createVerifyTemplateVersion = async (
+const createVerifyTemplateVersion = async (
+  apiKey,
   templateId, 
   name = "Verify OTP Template", 
   subject = "One Time Passcode", 
   active = 1
 ) => {
+  const client = sendgrid.getSendgridClient(apiKey);
   //optional
   const headers = {};
   const data = {
@@ -65,11 +69,12 @@ export const createVerifyTemplateVersion = async (
   }
 
   return await client.request(request)
-    .then( ([response, data]) => [response, data])
+    .then( ([response, body]) => [response, body])
     .catch(err => err);
 }
 
-export const updateTemplateVersion= async (
+const updateTemplateVersion= async (
+  apiKey,
   templateId,
   versionId,
   active,
@@ -77,6 +82,7 @@ export const updateTemplateVersion= async (
   subject,
   htmlContent
 ) => {
+  const client = sendgrid.getSendgridClient(apiKey);
   //optional 
   const headers = {};
   const data = {
@@ -96,4 +102,11 @@ export const updateTemplateVersion= async (
   return await client.request(request)
     .then(([response, body]) => [response, body])
     .catch(err => err);
+} 
+
+module.exports = {
+  createDynamicTemplate,
+  createTemplateVersion,
+  createVerifyTemplateVersion,
+  updateTemplateVersion,
 }

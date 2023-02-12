@@ -14,6 +14,7 @@ const studioRoutes = require('./src/routes/studioRoutes.js');
 const verifyRoutes = require('./src/routes/verifyRoutes.js');
 const voiceRoutes = require('./src/routes/voiceRoutes.js');
 const emailRoutes = require('./src/routes/emailRoutes.js');
+const lookupRoutes = require('./src/routes/lookupRoutes.js');
 
 // Uncomment next 3 lines to have a Twilio client for experimentation in index.js
 // const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -34,6 +35,7 @@ app.use('/', studioRoutes);
 app.use('/', verifyRoutes);
 app.use('/', voiceRoutes);
 app.use('/', emailRoutes);
+app.use('/', lookupRoutes);
 
 const server = http.createServer(app).listen(8009, () => {
   console.log('Express server listening on port 8009');

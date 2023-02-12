@@ -1,7 +1,7 @@
-import express from 'express';
+const express = require('express');
 const router = express.Router();
 
-import { phoneNumberLookup } from '../twilio/lookup';
+const { phoneNumberLookup } = require('../twilio/lookup');
 
 
 router.post('/lookup/fetch-phone-number', (req, res) => {

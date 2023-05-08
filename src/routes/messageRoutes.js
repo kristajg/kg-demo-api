@@ -16,8 +16,8 @@ router.post('/send-message', (req, res) => {
 });
 
 router.post('/send-mms', (req, res) => {
-  const { messageBody, mediaUrl, toNumber, fromNumber } = req.body;
-  sendMMS(messageBody, mediaUrl, toNumber, fromNumber)
+  const { mediaUrl, toNumber, fromNumber, messageBody = 'Demo MMS' } = req.body;
+  sendMMS(mediaUrl, toNumber, fromNumber, messageBody)
     .then(data => res.json({ data }))
     .catch(err => {
       console.log('Err sending MMS message ', err);

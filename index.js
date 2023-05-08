@@ -14,11 +14,6 @@ const verifyRoutes = require('./src/routes/verifyRoutes.js');
 const voiceRoutes = require('./src/routes/voiceRoutes.js');
 const emailRoutes = require('./src/routes/emailRoutes.js');
 
-// Uncomment next 3 lines to have a Twilio client for experimentation in index.js
-// const accountSid = process.env.TWILIO_ACCOUNT_SID;
-// const authToken = process.env.TWILIO_AUTH_TOKEN;
-// const client = require('twilio')(accountSid, authToken);
-
 const app = express();
 
 app.use(express.json());
@@ -86,6 +81,11 @@ app.post('/status-callback', (req, res) => {
 // Webhook for Engagement Intelligence
 app.post('/engagement-intelligence-webhook', (req, res) => {
   console.log('Engagement endpoint hit ', req.body);
+})
+
+// Webhook for Messaging Click Tracking
+app.post('/messaging-click-tracking', (req, res) => {
+  console.log('click tracking endpoint hit ', req.body);
 })
 
 // Example data dip endpoint for studio, webhooks, etc

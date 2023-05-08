@@ -36,6 +36,27 @@ export const writeTextToFile = text => {
   });
 }
 
+export const generateTwiml = (
+  sayText = 'Thanks for calling the demo app. Lets just hang out and relax while we consider our lives.',
+  shouldRecord = false,
+) => {
+
+  const recordTwiml = `
+    <Record
+      recordingStatusCallback="https://myapp.com/recording-events"
+    />
+  `;
+
+  let twiml = `
+    <Response>
+      <Say>${sayText}</Say>
+      ${shouldRecord ? recordTwiml : ''}
+    </Response>
+  `;
+
+  return twiml;
+}
+
 export const verifyEmailHtmlTemplate = `
 <html>
 <head>

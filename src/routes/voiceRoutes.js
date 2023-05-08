@@ -6,8 +6,8 @@ const router = express.Router();
 import { placeCall, updateInProgressCall } from '../twilio/voice';
 
 router.post('/place-call', (req, res) => {
-  const { to, from, url, statusCallback } = req.body;
-  placeCall(to, from, url, statusCallback)
+  // const { to, from, url, statusCallback, recordCall, transcribeCall } = req.body;
+  placeCall(req.body)
     .then(data => res.json({ data }))
     .catch(err => {
       console.log('Err placing call ', err);

@@ -15,43 +15,43 @@ export const sendMessage = async (body, to, from, statusCallback = '') => {
       return message;
     })
     .catch(err => {
-      console.log(`Error sending SMS: ${err}`);
+      console.log('Error sending SMS: ', err);
       return err;
     });
 }
 
 // Send one MMS
-export const sendMMS = async (body, mediaUrl, to, from) => {
+export const sendMMS = async (mediaUrl, to, from, messageBody = 'Demo MMS') => {
   return await client.messages.create({
-      body,
       from,
       to,
       mediaUrl,
+      body: messageBody,
     })
     .then(message => {
-      console.log(`MMS message sent: ${message.sid}`);
+      console.log('MMS message sent: ', message.sid);
       return message;
     })
     .catch(err => {
-      console.log(`Error sending MMS: ${err}`);
+      console.log('Error sending MMS: ', err);
       return err;
     });
 }
 
 // Send message from Messaging Service
-export const sendMessageByService = async (messagingServiceSid = process.env.MESSAGE_SERVICE_DEMO_SID, body, to, from) => {
+export const sendMessageByService = async (messagingServiceSid = process.env.MESSAGE_SERVICE_DEMO_SID, body, to, shortenUrls = false,) => {
   return await client.messages.create({
       messagingServiceSid,
       body,
-      from,
       to,
+      shortenUrls,
     })
     .then(message => {
-      console.log(`Messaging service message sent: ${message.sid}`);
+      console.log('Messaging service message sent: ', message);
       return message;
     })
     .catch(err => {
-      console.log(`Error sending messaging service message: ${err}`);
+      console.log('Error sending messaging service message: ', err);
       return err;
     })
 }

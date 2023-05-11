@@ -1,9 +1,20 @@
-// express
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
 
-// twilio functions
 import { sendMessage, sendMMS, sendMessageByService, scheduleMessage, listMessages } from '../twilio/messages';
+import { getFileExtension } from '../utils/utils';
+
+// multer setup
+const storage = multer.diskStorage({
+  destination: 'uploads/',
+  filename: (req, file, cb) => {
+    // create tmp file for MMS
+    let fileExt = getFileExtension(file.originalname);
+    cb(null, 'tmp.' + fileExt);
+  },
+});
+const upload = multer({ storage });
 
 router.post('/send-message', (req, res) => {
   const { messageBody, toNumber, fromNumber } = req.body;
@@ -15,15 +26,17 @@ router.post('/send-message', (req, res) => {
     });
 });
 
-router.post('/send-mms', (req, res) => {
-  const { messageBody, mediaUrl, toNumber, fromNumber } = req.body;
-  sendMMS(messageBody, mediaUrl, toNumber, fromNumber)
+router.post('/send-mms', upload.single('mmsFile'), (req, res) => {
+  const { toNumber, fromNumber, messageBody } = req.body;
+  const fileName = '/tmp.' + getFileExtension(req.file.originalname);
+  const mediaUrl = process.env.NGROK_BASE_URL + fileName;
+  sendMMS(mediaUrl, toNumber, fromNumber, messageBody)
     .then(data => res.json({ data }))
     .catch(err => {
       console.log('Err sending MMS message ', err);
       res.send('Error sending MMS');
     });
-});
+})
 
 router.post('/send-message-by-service', (req, res) => {
   const { messageBody, messagingServiceSId, toNumber, fromNumber } = req.body;

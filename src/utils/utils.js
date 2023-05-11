@@ -1,14 +1,14 @@
 import { writeFile } from 'fs';
 
+export const getFileExtension = fileName => fileName.split('.').pop();
+
 export const getFutureTimeInMins = diffInMinutes => {
   let date = new Date();
   let newDateObj = new Date(date.getTime() + diffInMinutes*60000);
   return newDateObj.toISOString();
 }
 
-export const insertSpaceBetweenChars = text => {
-  return text.split('').join(' ');
-};
+export const insertSpaceBetweenChars = text => text.split('').join(' ');
 
 // Remove whitespace and swap common words for desired characters
 export const scrubDialogFlowText = text => {
@@ -34,6 +34,26 @@ export const writeTextToFile = text => {
     if (err) console.log('Error writing to file ', err);
     console.log('file write success');
   });
+}
+
+export const generateTwiml = (
+  sayText = 'Thanks for calling the demo app. Lets just hang out and relax while we consider our lives.',
+  shouldRecord = false,
+) => {
+  const recordTwiml = `
+    <Record
+      recordingStatusCallback="https://myapp.com/recording-events"
+    />
+  `;
+
+  let twiml = `
+    <Response>
+      <Say>${sayText}</Say>
+      ${shouldRecord ? recordTwiml : ''}
+    </Response>
+  `;
+
+  return twiml;
 }
 
 export const verifyEmailHtmlTemplate = `

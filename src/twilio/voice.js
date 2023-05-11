@@ -1,27 +1,33 @@
 // twilio client
 import { client } from '../utils/twilioClient';
 
-export const placeCall = async (
-  to,
-  from,
-  twiml = '<Response><Say>Thanks for calling the demo app. Lets just hang out and relax while we consider our lives.</Say></Response>',
-  url = '', 
-  statusCallback = 'https://kaygee.ngrok.io/status-callback',
-  statusCallbackEvent = ['initiated', 'ringing', 'answered', 'completed'],
-) => {
+export const placeCall = async callData => {
+  const {
+    to,
+    from,
+    twiml = '',
+    url = '',
+    statusCallback = 'https://kaygee.ngrok.io/status-callback',
+    statusCallbackEvent = ['initiated', 'ringing', 'answered', 'completed'],
+    recordCall = false,
+    transcribeCall = false,
+  } = callData;
+
   let callObj = {
     to,
     from,
+    url: 'http://demo.twilio.com/docs/voice.xml',
     statusCallback,
     statusCallbackEvent,
   };
   // Can either use straight twiml, or url that returns twiml
-  if (twiml) {
-    callObj.twiml = twiml;
-  }
-  if (url && !twiml) {
-    callObj.url = url;
-  }
+  // if (twiml) {
+  //   callObj.twiml = twiml;
+  // }
+  // if (url && !twiml) {
+  //   callObj.url = url;
+  // }
+
   return await client.calls.create(callObj)
     .then(call => {
       console.log(call.sid);

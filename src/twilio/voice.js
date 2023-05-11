@@ -16,16 +16,17 @@ export const placeCall = async callData => {
   let callObj = {
     to,
     from,
+    url: 'http://demo.twilio.com/docs/voice.xml',
     statusCallback,
     statusCallbackEvent,
   };
   // Can either use straight twiml, or url that returns twiml
-  if (twiml) {
-    callObj.twiml = twiml;
-  }
-  if (url && !twiml) {
-    callObj.url = url;
-  }
+  // if (twiml) {
+  //   callObj.twiml = twiml;
+  // }
+  // if (url && !twiml) {
+  //   callObj.url = url;
+  // }
 
   return await client.calls.create(callObj)
     .then(call => {

@@ -29,6 +29,9 @@ app.use('/', verifyRoutes);
 app.use('/', voiceRoutes);
 app.use('/', emailRoutes);
 
+// route for uploaded mms image(s)
+app.use(express.static(__dirname + '/uploads'));
+
 const server = http.createServer(app).listen(8009, () => {
   console.log('Express server listening on port 8009');
 });

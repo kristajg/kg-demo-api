@@ -25,7 +25,7 @@ export const sendMMS = async (mediaUrl, to, from, messageBody = 'Demo MMS') => {
   return await client.messages.create({
       from,
       to,
-      mediaUrl,
+      mediaUrl: [mediaUrl],
       body: messageBody,
     })
     .then(message => {

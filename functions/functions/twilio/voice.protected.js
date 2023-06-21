@@ -4,7 +4,7 @@ const placeCall = async (
   from,
   twiml = '<Response><Say>Thanks for calling the demo app. Lets just hang out and relax while we consider our lives.</Say></Response>',
   url = '', 
-  statusCallback = 'https://kaygee.ngrok.io/status-callback',
+  statusCallback = process.env.NGROK_BASE_URL + '/status-callback',
   statusCallbackEvent = ['initiated', 'ringing', 'answered', 'completed'],
 ) => {
   let callObj = {

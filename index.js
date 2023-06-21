@@ -14,6 +14,9 @@ const verifyRoutes = require('./src/routes/verifyRoutes.js');
 const voiceRoutes = require('./src/routes/voiceRoutes.js');
 const emailRoutes = require('./src/routes/emailRoutes.js');
 
+// function imports
+const { detectOptOut } = require('./src/twilio/messages');
+
 const app = express();
 
 app.use(express.json());
@@ -66,6 +69,7 @@ app.post('/inbound-call', (req, res) => {
 
 app.post('/inbound-sms', (req, res) => {
   console.log('Inbound sms endpoint hit ', req.body);
+  detectOptOut(req.body);
   res.send('ok');
 });
 

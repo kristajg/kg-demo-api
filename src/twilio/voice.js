@@ -7,7 +7,7 @@ export const placeCall = async callData => {
     from,
     twiml = '',
     url = '',
-    statusCallback = 'https://kaygee.ngrok.io/status-callback',
+    statusCallback = process.env.NGROK_BASE_URL + '/status-callback',
     statusCallbackEvent = ['initiated', 'ringing', 'answered', 'completed'],
     recordCall = false,
     transcribeCall = false,

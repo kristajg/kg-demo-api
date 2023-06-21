@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const router = express.Router();
 
-import { sendMessage, sendMMS, sendMessageByService, scheduleMessage, listMessages } from '../twilio/messages';
+import { sendMessage, sendMMS, sendMessageByService, scheduleMessage, listMessages, listMessagingServices } from '../twilio/messages';
 import { getFileExtension } from '../utils/utils';
 
 // multer setup
@@ -72,6 +72,16 @@ router.post('/list-messages', (req, res) => {
     .catch(err => {
       console.log('Err getting account messages ', err);
       res.send('Err getting account messages');
+    });
+});
+
+router.post('/list-messaging-services', (req, res) => {
+  const { filterCriteria } = req.body;
+  listMessagingServices(filterCriteria)
+    .then(data => res.json({ data }))
+    .catch(err => {
+      console.log('Err getting messaging services ', err);
+      res.send('Err getting messaging services');
     });
 });
 

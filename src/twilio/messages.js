@@ -96,3 +96,17 @@ export const scheduleMessage = async (
       return err;
     });
 }
+
+// List all Messaging Services
+export const listMessagingServices = async (filterCriteria = { limit: 20 }) => {
+  return await client.messaging.v1.services
+    .list(filterCriteria)
+    .then(services => {
+      services.forEach(s => console.log(s));
+      return services;
+    })
+    .catch(err => {
+      console.log('Error fetching messaging services ', err);
+      return err;
+    });
+}

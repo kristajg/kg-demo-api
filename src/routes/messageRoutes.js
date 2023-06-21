@@ -17,8 +17,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post('/send-message', (req, res) => {
-  const { messageBody, toNumber, fromNumber } = req.body;
-  sendMessage(messageBody, toNumber, fromNumber)
+  sendMessage(req.body)
     .then(data => res.json({ data }))
     .catch(err => {
       console.log('Err sending SMS message ', err);

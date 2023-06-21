@@ -2,20 +2,43 @@
 import { client } from '../utils/twilioClient';
 import { getFutureTimeInMins } from '../utils/utils';
 
-// Send one SMS
-export const sendMessage = async (body, to, from, statusCallback = '') => {
-  return await client.messages.create({
-      to,
-      from,
-      body,
-      statusCallback,
-    })
+// Send a message by either phone number or service
+export const sendMessage = async ({
+  to = '',
+  from = '',
+  messagingServiceSid = '',
+  body = '',
+  statusCallback = process.env.NGROK_BASE_URL + '/status-callback',
+  sendAt = '',
+  scheduleType = 'fixed',
+}) => {
+  const data = {
+    to,
+    from,
+    messagingServiceSid,
+    body,
+    statusCallback,
+    sendAt,
+    scheduleType,
+  };
+  
+  // Can send by either individual phone number or Messaging Service Sid (prioritize)
+  if (messagingServiceSid) delete data.from
+  if (from && !messagingServiceSid) delete data.messagingServiceSid;
+
+  // Can schedule for (minimum) 15 mins and (maximum) 7 days in the future
+  if (!sendAt) {
+    delete data.sendAt;
+    delete data.scheduleType;
+  }
+
+  return await client.messages.create(data)
     .then(message => {
-      console.log('SMS message sent: ', message.sid);
+      console.log('Message sent: ', message.sid);
       return message;
     })
     .catch(err => {
-      console.log('Error sending SMS: ', err);
+      console.log('Error sending message: ', err);
       return err;
     });
 }
@@ -74,7 +97,7 @@ export const scheduleMessage = async (
       to,
     })
     .then(message => {
-      console.log(`SMS successfully scheduled to be sent: ${message.sid}`);
+      console.log('SMS successfully scheduled to be sent: ', message.sid);
       return message;
     })
     .catch(err => {
@@ -88,7 +111,6 @@ export const listMessages = async (filterCriteria = { limit: 20 }) => {
   return await client
     .messages.list(filterCriteria)
     .then(messages => {
-      messages.forEach(m => console.log(m));
       return messages;
     })
     .catch(err => {
@@ -102,7 +124,6 @@ export const listMessagingServices = async (filterCriteria = { limit: 20 }) => {
   return await client.messaging.v1.services
     .list(filterCriteria)
     .then(services => {
-      services.forEach(s => console.log(s));
       return services;
     })
     .catch(err => {

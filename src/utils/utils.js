@@ -8,6 +8,20 @@ export const getFutureTimeInMins = diffInMinutes => {
   return newDateObj.toISOString();
 }
 
+export const createMessagePayload = data => {
+  // Can send by either individual phone number or Messaging Service Sid
+  // If both exist, Messaging Service is the priority
+  if (data.messagingServiceSid) delete data.from
+  if (data.from && !data.messagingServiceSid) delete data.messagingServiceSid;
+
+  // Can schedule for (minimum) 15 mins and (maximum) 7 days in the future
+  if (!data.sendAt) {
+    delete data.sendAt;
+    delete data.scheduleType;
+  }
+  return data;
+}
+
 export const insertSpaceBetweenChars = text => text.split('').join(' ');
 
 // Remove whitespace and swap common words for desired characters

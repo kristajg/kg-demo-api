@@ -26,10 +26,9 @@ router.post('/send-message', (req, res) => {
 });
 
 router.post('/send-mms', upload.single('mmsFile'), (req, res) => {
-  const { toNumber, fromNumber, messageBody } = req.body;
   const fileName = '/tmp.' + getFileExtension(req.file.originalname);
   const mediaUrl = process.env.NGROK_BASE_URL + fileName;
-  sendMMS(mediaUrl, toNumber, fromNumber, messageBody)
+  sendMMS({ ...req.body, mediaUrl })
     .then(data => res.json({ data }))
     .catch(err => {
       console.log('Err sending MMS message ', err);

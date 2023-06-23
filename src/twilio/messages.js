@@ -1,6 +1,6 @@
 // twilio client
 import { client } from '../utils/twilioClient';
-import { getFutureTimeInMins } from '../utils/utils';
+import { createMessagePayload, getFutureTimeInMins } from '../utils/utils';
 
 // Send a message by either phone number or service
 export const sendMessage = async ({
@@ -12,7 +12,7 @@ export const sendMessage = async ({
   sendAt = '',
   scheduleType = 'fixed',
 }) => {
-  const data = {
+  const data = createMessagePayload({
     to,
     from,
     messagingServiceSid,
@@ -20,18 +20,7 @@ export const sendMessage = async ({
     statusCallback,
     sendAt,
     scheduleType,
-  };
-  
-  // Can send by either individual phone number or Messaging Service Sid (prioritize)
-  if (messagingServiceSid) delete data.from
-  if (from && !messagingServiceSid) delete data.messagingServiceSid;
-
-  // Can schedule for (minimum) 15 mins and (maximum) 7 days in the future
-  if (!sendAt) {
-    delete data.sendAt;
-    delete data.scheduleType;
-  }
-
+  });
   return await client.messages.create(data)
     .then(message => {
       console.log('Message sent: ', message.sid);
@@ -44,13 +33,27 @@ export const sendMessage = async ({
 }
 
 // Send one MMS
-export const sendMMS = async (mediaUrl, to, from, messageBody = 'Demo MMS') => {
-  return await client.messages.create({
-      from,
-      to,
-      mediaUrl: [mediaUrl],
-      body: messageBody,
-    })
+export const sendMMS = async ({
+  to = '',
+  from = '',
+  messagingServiceSid = '',
+  mediaUrl = process.env.DEMO_MMS_MEDIA_URL,
+  body = '',
+  statusCallback = process.env.NGROK_BASE_URL + '/status-callback',
+  sendAt = '',
+  scheduleType = 'fixed',
+}) => {
+  const data = createMessagePayload({
+    to,
+    from,
+    messagingServiceSid,
+    mediaUrl: [mediaUrl],
+    body,
+    statusCallback,
+    sendAt,
+    scheduleType,
+  });
+  return await client.messages.create(data)
     .then(message => {
       console.log('MMS message sent: ', message.sid);
       return message;

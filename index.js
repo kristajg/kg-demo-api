@@ -7,6 +7,7 @@ import WebSocket from 'ws';
 
 // route imports
 const dialogflowRoutes = require('./src/routes/dialogflowRoutes.js');
+const lookupRoutes = require('./src/routes/lookupRoutes.js');
 const messageRoutes = require('./src/routes/messageRoutes.js');
 const numberRoutes = require('./src/routes/numberRoutes.js');
 const studioRoutes = require('./src/routes/studioRoutes.js');
@@ -25,6 +26,7 @@ app.use(cookieParser());
 
 // route instantiation
 app.use('/', dialogflowRoutes);
+app.use('/', lookupRoutes);
 app.use('/', messageRoutes);
 app.use('/', numberRoutes);
 app.use('/', studioRoutes);
